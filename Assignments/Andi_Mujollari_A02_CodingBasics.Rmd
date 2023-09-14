@@ -39,11 +39,11 @@ my_sequence
 mean_value <- mean(my_sequence) 
 #With this code we tell R to find the median value of our sequence
 median_value <- median(my_sequence)
-#Here we ask R is mean is grater than the median
+#Here we ask R if mean is grater than the median
 mean_grater_than_median <- mean_value > median_value
 cat("Mean:", mean_value, "\n")
 cat("Median:",median_value, "\n")
-cat("Is mean grater than median?", mean_grater_than_median, "\n")
+cat("Is mean grater than the median?", mean_grater_than_median, "\n")
 #1. 
 
 #2. 
@@ -67,7 +67,7 @@ cat("Is mean grater than median?", mean_grater_than_median, "\n")
 student_names <- c("Shila","Migel","Jona", "Uarda")
 #In the second Vector i have assigned the test scores of each of them
 student_scores <- c(98, 67, 76, 34)
-#In the third Vector i set if they passed the test (TRUE or FALSE) with a passing grade of 50
+#In the third Vector i see if they passed the test (TRUE or FALSE) with a passing grade of 50
 passed_status <- student_scores >=50 
 # In the end i collect the vectors into a data frame 
 student_table <- data.frame(Name = student_names, Score = student_scores, Passed = passed_status)
@@ -76,7 +76,7 @@ student_table
 
 9.  QUESTION: How is this data frame different from a matrix?
 
-> Answer:n Data frames allows me to use different data types combined together. On the other hand, if i had to use a matrix instead, i would have to convert all the data in one type.
+> Answer: Data frames allows me to use different data types combined together. On the other hand, if i had to use a matrix instead, i would have to convert all the data in one type.
 
 10. Create a function with an if/else statement. Your function should take a **vector** of test scores and print (not return) whether a given test score is a passing grade of 50 or above (TRUE or FALSE). You will need to choose either the `if` and `else` statements or the `ifelse` statement.
 
@@ -90,8 +90,6 @@ return(TRUE)
     } else {
 return(FALSE) }
 }
-# Retelling R what where the scores of our students at Q5
-student_scores <- c(98, 67, 76, 34)
 
 for (score in student_scores) {
 cat("Score:", score, "Passing:", check_passing_score(score), "\n")
@@ -100,13 +98,11 @@ cat("Score:", score, "Passing:", check_passing_score(score), "\n")
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 ```{r}
-#To compare the option first i have to try also the ifelse command 
+#To compare the options first i have to try also the ifelse command 
 check_passing_score <- function(score) {
   result <- ifelse(score >=50, "TRUE", "FALSE")
   cat(result, "\n")
 }
-#Retelling R what where the scores of our students at Q5
-student_scores <- c(98, 67, 76, 34)
 
  for (score in student_scores) {
 cat("Score:", score, "Passing:", check_passing_score(score), "\n")

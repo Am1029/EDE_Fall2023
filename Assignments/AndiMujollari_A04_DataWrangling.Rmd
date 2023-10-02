@@ -32,9 +32,9 @@ The completed exercise is due on Thursday, Sept 28th @ 5:00pm.
 
 ```{r setup, message = FALSE}
 #1a From library i will get the three packages 
-install.packages("tidyverse")
+#install.packages("tidyverse")
 library(tidyverse)
-install.packages("lubridate")
+#install.packages("lubridate")
 library(lubridate)
 library(here)
 
@@ -95,21 +95,21 @@ EPAair_PM25_NC2019_raw$Date <- as.Date(EPAair_PM25_NC2019_raw$Date, format = "%m
 # Here i select specific columns for each dataset
 
 
-selected_data_1 <- select(EPAair_O3_NC2018_raw, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC,
-                         COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
-selected_data_2 <- select(EPAair_O3_NC2019_raw, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC,
-                         COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
-selected_data_3 <- select(EPAair_PM25_NC2018_raw, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC,
-                         COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
-selected_data_4 <- select(EPAair_PM25_NC2019_raw, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC,
-                         COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+selected_data1 <- select(EPAair_O3_NC2018_raw, Date, DAILY_AQI_VALUE, Site.Name, 
+                         AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+selected_data2 <- select(EPAair_O3_NC2019_raw, Date, DAILY_AQI_VALUE, Site.Name, 
+                         AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+selected_data3 <- select(EPAair_PM25_NC2018_raw, Date, DAILY_AQI_VALUE, Site.Name, 
+                         AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+selected_data4 <- select(EPAair_PM25_NC2019_raw, Date, DAILY_AQI_VALUE, Site.Name, 
+                         AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 
 
 #5 Here only for the PM2.5 datasets i fill all cells in AQS_PARAMETER_DESC with "PM2.5"
-selected_data_3 <- selected_data_3 %>%
+selected_data3 <- selected_data3 %>%
   mutate(AQS_PARAMETER_DESC = "PM2.5")
 
-selected_data_4 <- selected_data_4 %>%
+selected_data4 <- selected_data4 %>%
   mutate(AQS_PARAMETER_DESC = "PM2.5")
 
 
@@ -237,7 +237,8 @@ dim(spread_data)
 #11
 
 #Here i save my processed dataset with the following file name: "EPAair_O3_PM25_NC1819_Processed.csv"
-write.csv(spread_data, file.path(processed_folder, "EPAair_O3_PM25_NC1819_Processed.csv"), row.names = FALSE)
+write.csv(spread_data, file.path(processed_folder, 
+                                 "EPAair_O3_PM25_NC1819_Processed.csv"), row.names = FALSE)
 ```
 
 

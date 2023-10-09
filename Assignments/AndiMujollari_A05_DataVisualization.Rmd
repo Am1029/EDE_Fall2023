@@ -1,6 +1,6 @@
 ---
 title: "Assignment 5: Data Visualization"
-author: "Student Name"
+author: "Andi Mujollari"
 date: "Fall 2023"
 output: pdf_document
 geometry: margin=2.54cm
@@ -32,8 +32,27 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 
 ```{r initialize project}
 #1 
+library(tidyverse)
+library(lubridate)
+library(here)
+library(cowplot)
+#install.packages('cowplot')
+getwd()
+
+PP_Lake_Nutrients_data <- read.csv('./Data/Processed_KEY/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv')
+NN_Litter_data <- read.csv('./Data/Processed_KEY/NEON_NIWO_Litter_mass_trap_Processed.csv')
 
 #2 
+# Check the structure if dates are being read as date format
+str(PP_Lake_Nutrients_data)
+str(NN_Litter_data)
+
+#In both of the datasets the dates are not being reas as date format so we have to impose R to read them as dates. 
+
+PP_Lake_Nutrients_data$sampledate <- as.Date(PP_Lake_Nutrients_data$sampledate, 
+                                             format = "%Y-%m-%d")
+NN_Litter_data$collectDate <- as.Date(NN_Litter_data$collectDate, 
+                                      format = "%Y-%m-%d")
 
 ```
 ## Define your theme
@@ -46,6 +65,27 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 
 ```{r build plot theme}
 #3
+library(ggplot2)
+#mytheme <- theme_classic(base_size = 14) +
+#  theme(axis.text = element_text(color = "black"), 
+#        legend.position = ("top"),
+#Costumise background 
+#plot.background = element_rect(fill = "white"),
+
+#Costumise axis title 
+#axis.title = element_text(color = "darkblue", size = 14, face = "bold"),
+
+# Costumise axis ticks
+#axis.text = element_text(color = "black", size = 12),
+#axis.line = element_line(color = "green"),
+#axis.ticks = element_line(color = "purple"),
+
+
+#Costumise legend
+#legend.title = element_text(color = "red", size = 12, face = "bold")
+
+#theme_set(mytheme())
+ #It was impossible to KNIT the file without commenting this section. 
 
 ```
 
@@ -57,6 +97,27 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 ```{r plot total P vs PO4}
 #4 
 
+library(dplyr)
+
+#Here i create the plots for each Lake
+
+ggplot1 <- ggplot(PP_Lake_Nutrients_data, 
+       aes(x = po4,
+           y = tp_ug,
+           color = lakename)) +
+  geom_point() +
+  geom_smooth(method = 'lm') +
+  labs(
+    title = "Total Phosphorus vs. Phosphate",
+    x = "Phosphate",
+    y = "Total Phosphorus"
+  ) +
+  scale_y_continuous(limits = c(0, quantile(PP_Lake_Nutrients_data$tp_ug, 0.95, na.rm = TRUE))) +
+  scale_x_continuous(limits = c(0, quantile(PP_Lake_Nutrients_data$po4, 0.95, na.rm = TRUE))) +
+  theme_light () +
+  facet_wrap(vars(lakename), ncol = 2)  # Separate plots for Peter and Paul)
+
+print(ggplot1)
 ```
 
 
@@ -69,11 +130,47 @@ Tip:
 ```{r Create boxplots}
 #5 
 
+
+
+# Create a data frame with all months
+all_months <- data.frame(month = unique(PP_Lake_Nutrients_data$month))
+ 
+# Here i combine my original data with the data frame containing all months
+PP_Lake_Nutrients_data <- merge(all_months, PP_Lake_Nutrients_data, by = "month", all.x = TRUE)
+
+# Define a vector of abbreviated month labels
+#month.abb
+
+# Here i modify my boxplot code
+boxplot_temp <- ggplot(PP_Lake_Nutrients_data, aes(x = factor(month, levels = unique(month)), y = temperature_C, fill = lakename)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Temperature", y = "Temperature °C") +
+  theme_minimal() +
+  scale_x_discrete(expand = c(0, 0), labels = month.abb, drop = FALSE)
+ 
+boxplot_tp <- ggplot(PP_Lake_Nutrients_data, aes(x = factor(month, levels = unique(month)), y = tp_ug, fill = lakename)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Total Phosphorus (TP)", y = "Total Phosphorus") +
+  theme_minimal() +
+  scale_x_discrete(expand = c(0, 0), labels = month.abb, drop = FALSE)
+ 
+boxplot_tn <- ggplot(PP_Lake_Nutrients_data, aes(x = factor(month, levels = unique(month)), y = tn_ug, fill = lakename)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Total Nitrogen (TN)", y = "Total Nitrogen") +
+  theme_minimal() +
+  scale_x_discrete(expand = c(0, 0), labels = month.abb, drop = FALSE)
+
+ 
+# Combine the three boxplots into a single cowplot with one legend and aligned axes
+combined_plot <- plot_grid(boxplot_temp, boxplot_tp,
+                           boxplot_tn, ncol = 1, align = "v",
+                           rel_heights = c(1, 1, 1))
+print(combined_plot)
 ```
 
 Question: What do you observe about the variables of interest over seasons and between lakes? 
 
-> Answer: 
+> Answer: The temperature is higher during the srping season for both of the lakes, compare to the other seasons. From the graph we can say that during February till June, lake Paul has a higher temperature than Peter. When it comes to Phosphorus indicator, lake Peter has a higher level than Paul almost the entire time. Finally, at the Total Nitrogen boxplot, we can observe that Peter lake has higher levels than Paul lake.  Both of the indicators, Phosphorus and Nitrogen seem to have a possitive corrolation with temperature, because during the spring season when the temp is high, the level of the idicators are high too.  
 
 6. [Niwot Ridge] Plot a subset of the litter dataset by displaying only the "Needles" functional group. Plot the dry mass of needle litter by date and separate by NLCD class with a color aesthetic. (no need to adjust the name of each land use)
 
@@ -81,12 +178,43 @@ Question: What do you observe about the variables of interest over seasons and b
 
 ```{r Plot litter}
 #6
-
+ 
+# Here i filter the dataset to include only the "Needles" group
+needles_subset <- NN_Litter_data %>%
+  filter(functionalGroup == "Needles")
+ 
+#Now i create the plot
+ggplot(needles_subset, aes(x = collectDate, y = dryMass, color = nlcdClass)) +
+  geom_line() +
+  labs(
+    title = "Dry Mass of Needle Litter by Date",
+    x = "Date",
+    y = "Dry Mass (g)"
+  ) +
+  theme_minimal()
 
 #7
-
+ 
+# Filter the dataset to include only the "Needles" functional group
+needles_subset <- NN_Litter_data %>%
+  filter(functionalGroup == "Needles")
+ 
+# Here I create the plot with facets
+ggplot(needles_subset, aes(x = collectDate, y = dryMass)) +
+  geom_line(aes(color = nlcdClass)) +
+  labs(
+    title = "Dry Mass of Needle Litter by Date",
+    x = "Date",
+    y = "Dry Mass (g)"
+  ) +
+  facet_wrap(vars(nlcdClass), scales = "free_y", ncol = 1) +  # Separate by nlcdClass into facets
+  theme_minimal()
+ 
+#Finally i get the unique NLCD classes
+unique_nlcd_classes <- unique(NN_Litter_data$nlcdClass)
+ 
 
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
 
-> Answer:
+> Answer: If we have to compare the levels betwen each other during the time, the plot 6 is using the same scale which might help us to compare. On the other hand, it is more appealing when we see the plot 7. 

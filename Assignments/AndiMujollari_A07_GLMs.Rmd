@@ -27,14 +27,14 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 
 ```{r setup2}
 #1
-setwd("/Users/andimujollari/Desktop/EDE-Fall2023/Data/Raw")
+setwd("/Users/andimujollari/Desktop/EDE-Fall2023/")
 library(tidyverse)
-install.packages("agricolae")
+#install.packages("agricolae")
 library(agricolae)
-raw_data <- read.csv("NTL-LTER_Lake_ChemistryPhysics_Raw.csv")
+raw_data <- read.csv("./Data/Raw/NTL-LTER_Lake_ChemistryPhysics_Raw.csv")
 raw_data$sampledate <- as.Date(raw_data$sampledate, format = "%m/%d/%Y")
 
-  
+getwd()  
 #2
 # Here i set the theme
 
@@ -102,11 +102,11 @@ scatter_plot <- ggplot(data = filtered_data, aes(x = depth, y = temperature_C)) 
   ) +
   theme_minimal() + 
   theme(
-    panel.grid.major = element_blank(),  
+    panel.grid.major = element_line(color = "gray"),  
     panel.grid.minor = element_blank(),  
     axis.title = element_text(face = "bold"),  
     axis.text = element_text(size = 12),      
-    plot.title = element_text(size = 16, hjust = 0.5)  \
+    plot.title = element_text(size = 16, hjust = 0.5) 
   ) +
   ylim(0, 35)
 
@@ -290,4 +290,7 @@ print(t_test_result)
 
 ```
 
->Answer: The Welch Two-Sample t-test results show that there isn't enough evidence to suggest that the mean temperatures for Crampton Lake and Ward Lake in July are significantly different. However, this contradicts the outcome of Tukey's HSD test in part 16, which showed significant differences in mean temperatures between lakes. The difference could be due to the disparity in the statistical tests used. The t-test focuses on a specific comparison between two lakes, while Tukey's HSD test considers multiple pairwise comparisons among lakes. These differences highlight the importance of selecting appropriate statistical tests and considering the specific research question and data characteristics.
+>Answer: The Welch Two-Sample t-test results show that there isn't enough evidence to suggest that the mean temperatures for Crampton Lake and Ward Lake in July are significantly different. However, this contradicts the outcome of Tukey's HSD test in question 16, which showed significant differences in mean temperatures between lakes. The difference could be due to the disparity in the statistical tests used. The t-test focuses on a specific comparison between two lakes, while Tukey's HSD test considers multiple pairwise comparisons among lakes. These differences highlight the importance of selecting appropriate statistical tests and considering the specific research question and data characteristics.
+
+
+
